@@ -1,0 +1,30 @@
+<!DOCTYPE>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Gameable</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Paul Franzen">
+	<!-- Date: 2012-01-21 -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<script src="js/jquery.hotkeys.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/key_status.js"></script>
+	<script type="text/javascript" src="js/sprite.js"></script>
+	<script type="text/javascript" src="js/jquery.gameable.js"></script>
+	<style type="text/css">
+		#game_panel{
+			width:500px;
+			height:400px;
+			margin:20px auto 0;
+			border:3px solid #ccc;
+			display:block;
+		}
+	</style>
+</head>
+<body>
+	<div id="game_panel"></div>
+	<script>
+		$('#game_panel').gameable();	
+	</script>
+</body>
+</html>
