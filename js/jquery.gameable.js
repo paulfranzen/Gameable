@@ -4,7 +4,8 @@
     init : function(options) { 
       	var settings = $.extend( {
 	      'width'         : 500,
-	      'height' 		  : 400, //"#000000",220,370,32,32,3,"x-wing.png"
+	      'height' 		  : 400, 
+		  'background'	  : {"image": 'images/starfield3.jpg', "height": 600},
 		  'players'       : [{"color": "#000000","start_x":220,"start_y":370, "lives": 3, "image": "x-wing.png", "width":32,"height":32}]
 	    }, options);
 	//game.init(this,settings);
@@ -23,23 +24,41 @@
 	this.interval = null;
 	this.canvas = null;
 	this.fps = 30;
+	
 	this.end_game = function(){
 		alert('Game Over!');
 		clearInterval(this.interval);
 	};
+	var starfield, starX = 0, starY = 0, starY2 = (0-settings.background.height);
 	this.update= function(){
 		this.canvas.clearRect(0, 0, this.width, this.height);
-		for(var i=0; i < this.players.length; i++){
-			this.players[i].draw();
-			this.players[i].x = this.players[i].x.clamp(0, this.width - this.players[i].width);
-			this.players[i].bullets.forEach(function(bullet) {
+		function draw_starfield(canvas) {  	
+		  starfield = new Image();
+		  starfield.src = settings.background.image;	
+		  canvas.drawImage(starfield,starX,starY);
+		  canvas.drawImage(starfield,starX,starY2);
+		  if (starY > 600) {
+		    starY = -599;
+		  }
+		  if (starY2 > 600) {
+		    starY2 = -599;
+		  }
+		  starY += 1;
+		  starY2 += 1;
+		}
+		draw_starfield(this.canvas);
+		
+		this.players.forEach(function(player){
+			player.draw();
+			player.x = player.x.clamp(0, settings.width-player.width);
+			player.bullets.forEach(function(bullet) {
 				bullet.update();
 			});
-			this.players[i].bullets = this.players[i].bullets.filter(function(bullet) {
+			player.bullets = player.bullets.filter(function(bullet) {
 			    return bullet.active;
 			});
-			this.handle_collisions();
-		}
+		});
+		this.handle_collisions();
 		this.enemies.forEach(function(enemy) {
 		    enemy.update();
 		});
@@ -51,14 +70,17 @@
 		if(Math.random() < 0.1) {
 		   this.enemies.push(new Enemy({canvas_width:this.width, canvas_height: this.height, canvas: this.canvas}));
 		}
+		
+		
+		
 	
 	};
 	this.draw = function(){
-		for(var i=0; i < this.players.length; i++){
-			this.players[i].bullets.forEach(function(bullet) {    
+		this.players.forEach(function(player){
+			player.bullets.forEach(function(bullet){
 				bullet.draw();
-			});		
-		}
+			});
+		});
 		
 		this.enemies.forEach(function(enemy) {
 		    	enemy.draw();
@@ -114,6 +136,7 @@
 			})	
 	  	});
 	};//end handle collisions
+	
     function Enemy(I) {
 	  I = I || {};
 
@@ -166,7 +189,7 @@
 		  I.yVelocity = -I.speed;
 		  I.width = 3;
 		  I.height = 3;
-		  I.color = "#000";
+		  I.color = "#00A83E";
 
 		  I.inBounds = function() {
 		    return I.x >= 0 && I.x <= game.width &&
@@ -225,8 +248,9 @@
 		this.draw = function() {
 		    //canvas.fillStyle = this.color;
 		    //canvas.fillRect(this.x, this.y, this.width, this.height);
+			
 		    this.sprite.draw(this.canvas, this.x, this.y);
-			this.canvas.fillStyle = "#000000";
+			this.canvas.fillStyle = "#FFFFFF";
 		    this.canvas.fillText(this.lives, 3, 13);
 			this.handle_keys();
 			this.life_bar.draw();
@@ -264,8 +288,8 @@
 	
   $.fn.gameable = function(method) {
 	//extend the Number object with this clamp method
-	Number.prototype.clamp = function(min, max) {
-		 return Math.min(Math.max(this, min), max);
+	Number.prototype.clamp = function(min, max) { 
+		return Math.min(Math.max(this, min), max);
 	};
 	    
     // Method calling logic

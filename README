@@ -1,0 +1,38 @@
+A standard jQuery plugin.
+
+It creates a simple canvas shooting game ala defender.
+
+It allows the developer to configure some options to customize the game as they see fit.
+
+<style type="text/css">
+	#game_panel{
+		width:500px;
+		height:400px;
+		margin:20px auto 0;
+		border:3px solid #ccc;
+		display:block;
+	}
+</style>
+<div id="game_panel"></div>
+<script>
+	$('#game_panel').gameable({
+		width: 500,
+		height:400,
+		players: [
+					{
+					"color": "#000000",
+					"start_x":220,
+					"start_y":370, 
+					"lives": 3, 
+					"image": "x-wing.png", 
+					"width":32,
+					"height":32
+					}
+				]
+	});	
+</script>
+
+The game is based on the tutorial here:
+http://www.html5rocks.com/en/tutorials/canvas/notearsgame/#toc-references
+
+But all the code is refactored pretty heavily.
