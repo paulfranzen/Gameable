@@ -68,7 +68,7 @@
 		});
 
 		if(Math.random() < 0.1) {
-		   this.enemies.push(new Enemy({canvas_width:this.width, canvas_height: this.height, canvas: this.canvas}));
+		   this.enemies.push(new Enemy({canvas_width:this.width, canvas_height: this.height, canvas: this.canvas, game:this}));
 		}
 		
 		
@@ -166,6 +166,11 @@
 	  
 	  I.explode = function(){
 		this.active = false;
+		I.game.players.forEach(function(player){
+			//TODO: make this different per player if I ever incorporate multiple players
+			player.score.status = player.score.status + 5;
+			player.score.draw();
+		});
 	  }
 
 	  I.update = function() {
@@ -217,6 +222,14 @@
 		this.lives = p.lives;
 		this.sprite = Sprite(p.image);
 		this.bullets = [];
+		this.score = {
+		   color: "#ffffff",
+		   status: 0,
+		   draw: function(){
+			 game.canvas.fillStyle = this.color;
+			 game.canvas.fillText(this.status, 123, 13);
+		    }	
+		};
 		this.life_bar = {
 			live_color: "#990000",
 			dead_color: "#CCCCCC",
@@ -254,6 +267,7 @@
 		    this.canvas.fillText(this.lives, 3, 13);
 			this.handle_keys();
 			this.life_bar.draw();
+			this.score.draw();
 		};
 		this.shoot = function(){
 			//console.log('test');
