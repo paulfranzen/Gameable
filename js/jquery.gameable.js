@@ -5,9 +5,16 @@
       	var settings = $.extend( {
 	      'width'         : 500,
 	      'height' 		  : 400, 
-		  'background'	  : {"image": 'images/starfield3.jpg', "height": 600},
-		  'players'       : [{"color": "#000000","start_x":220,"start_y":370, "lives": 3, "image": "x-wing.png", "width":32,"height":32}]
-	    }, options);
+		  'background'	  : {"image": 'images/starfield2.jpg', "height": 422},
+		  'players'       : [{"color": "#000000","start_x":220,"start_y":370, "lives": 3, "image": "x-wing.png", "width":32,"height":32}],
+	      'enemies'		  : [{
+								"weight": 9,
+								"hits": 1,
+								"width": 32,
+								"height": 32,
+								"image": "tie-fighter.png"	
+							}]
+		}, options);
 	//game.init(this,settings);
 	var g = new Game(this, settings);
 		g.init();
@@ -18,6 +25,7 @@
 	this.container = container;
 	this.width = settings.width;
 	this.height = settings.height;
+	this.passed_enemies = settings.enemies;
 	this.fps = 30;
 	this.players = []; 
 	this.enemies = [];
@@ -37,11 +45,12 @@
 		  starfield.src = settings.background.image;	
 		  canvas.drawImage(starfield,starX,starY);
 		  canvas.drawImage(starfield,starX,starY2);
-		  if (starY > 600) {
-		    starY = -599;
+		  
+		  if (starY > settings.background.height) {
+		    starY = (settings.background.height-1)*-1;
 		  }
-		  if (starY2 > 600) {
-		    starY2 = -599;
+		  if (starY2 > settings.background.height) {
+		    starY2 = -1*(settings.background.height-1);
 		  }
 		  starY += 1;
 		  starY2 += 1;
@@ -66,13 +75,11 @@
 		this.enemies = this.enemies.filter(function(enemy) {
 			return enemy.active;
 		});
-
-		if(Math.random() < 0.1) {
-		   this.enemies.push(new Enemy({canvas_width:this.width, canvas_height: this.height, canvas: this.canvas, game:this}));
+		for (var i =0; i<= settings.enemies.length; i++){
+			if(Math.random() < 0.2) {
+				this.enemies.push(new Enemy({canvas_width:this.width, canvas_height: this.height, canvas: this.canvas, game:this}));
+			}
 		}
-		
-		
-		
 	
 	};
 	this.draw = function(){
