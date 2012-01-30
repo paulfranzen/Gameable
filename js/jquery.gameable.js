@@ -5,8 +5,9 @@
       	var settings = $.extend( {
 	      'width'         : 500,
 	      'height' 		  : 400, 
-		  'background'	  : {"image": 'images/starfield2.jpg', "height": 422},
-		  'players'       : [{"color": "#000000","start_x":220,"start_y":370, "lives": 3, "image": "x-wing.png", "width":32,"height":32}],
+		  'background'	  : {"image": 'images/starfield3.jpg', "height": 600},
+          'soundtrack'	  : 'sounds/musette.wav',  
+		  'players'       : [{"color": "#000000","start_x":220,"start_y":370, "lives": 3, "image": "x-wing.png", "width":32,"height":32,"fire_sound":"sounds/laser.wav","hit_sound":"sounds/ow.wav","die_sound":"sounds/frog.wav"}],
 	      'enemies'		  : [{
 								"weight": 9,
 								"hits": 1,
@@ -32,7 +33,6 @@
 	this.interval = null;
 	this.canvas = null;
 	this.fps = 30;
-	
 	this.end_game = function(){
 		alert('Game Over!');
 		clearInterval(this.interval);
@@ -98,6 +98,8 @@
 		var canvasElement 	= $('<canvas width="'+this.width+'" height="'+this.height+'"></canvas>');
 		this.canvas 			= canvasElement.get(0).getContext("2d");
 		$(this.container).append(canvasElement);
+		var bg_music = new Audio(settings.soundtrack);
+		bg_music.play();
 		var players = [];
 		for(var i=0; i< settings.players.length; i++){			
 			//players.push(new Player("#000000",220,370,32,32,3,"x-wing.png",this.canvas,this));
@@ -229,6 +231,9 @@
 		this.lives = p.lives;
 		this.sprite = Sprite(p.image);
 		this.bullets = [];
+		this.hit_sound = new Audio(p.hit_sound);
+		this.fire_sound = new Audio(p.fire_sound);
+		this.die_sound = new Audio(p.die_sound);
 		this.score = {
 		   color: "#ffffff",
 		   status: 0,
@@ -277,7 +282,7 @@
 			this.score.draw();
 		};
 		this.shoot = function(){
-			//console.log('test');
+			this.fire_sound.play();
 			if (this.bullets.length >= 10 ) return false;
 			var bulletPosition = this.midpoint();
 			this.bullets.push(new Bullet({
@@ -288,10 +293,12 @@
 		};
 		this.explode = function(){
 			this.life_bar.status = this.life_bar.status - 10;
+			this.hit_sound.play();
 			if ( this.life_bar.status <= 0 )
 				this.die();
 		};
 		this.die = function(){
+			this.die_sound.play()
 			this.lives = this.lives - 1;
 			if(this.lives == 0){ 
 				game.end_game();
